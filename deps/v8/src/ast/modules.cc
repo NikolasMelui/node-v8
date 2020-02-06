@@ -86,9 +86,10 @@ void SourceTextModuleDescriptor::AddStarExport(
 namespace {
 Handle<PrimitiveHeapObject> ToStringOrUndefined(Isolate* isolate,
                                                 const AstRawString* s) {
-  return (s == nullptr) ? Handle<PrimitiveHeapObject>::cast(
-                              isolate->factory()->undefined_value())
-                        : Handle<PrimitiveHeapObject>::cast(s->string());
+  return (s == nullptr)
+             ? Handle<PrimitiveHeapObject>::cast(
+                   isolate->factory()->undefined_value())
+             : Handle<PrimitiveHeapObject>::cast(s->string().get<Isolate>());
 }
 }  // namespace
 
@@ -136,7 +137,7 @@ Handle<FixedArray> SourceTextModuleDescriptor::SerializeRegularExports(
     // Collect the export names.
     int i = 0;
     for (; it != next; ++it) {
-      export_names->set(i++, *it->second->export_name->string());
+      export_names->set(i++, *it->second->export_name->string().get<Isolate>());
     }
     DCHECK_EQ(i, count);
 
